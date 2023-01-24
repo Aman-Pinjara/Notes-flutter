@@ -1,0 +1,4 @@
+enum Pages{
+  Note,
+  Expense
+}
