@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:noteapp/HomePageProvider.dart';
-import 'package:noteapp/expense/ExpenseHome.dart';
 import 'package:noteapp/note/NoteListProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +30,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     Provider.of<NoteListProvider>(context, listen: false).noteupdate();
