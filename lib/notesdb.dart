@@ -3,35 +3,11 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'note/NoteModel.dart';
+
 const String _tablename = 'notes';
 
-class Note {
-  final int? id;
-  final bool pinned;
-  final String title;
-  final String? des;
 
-  Note({this.id, required this.pinned, required this.title, this.des});
-
-  Map<String, Object?> toJson() => {
-        NoteTableName.id: id,
-        NoteTableName.pinned: pinned ? 1 : 0,
-        NoteTableName.title: title,
-        NoteTableName.des: des
-      };
-
-  static Note toNote(Map<String, Object?> map) => Note(
-      id: map[NoteTableName.id] as int?,
-      pinned: map[NoteTableName.pinned] == 1,
-      title: map[NoteTableName.title] as String,
-      des: map[NoteTableName.des] as String?);
-
-  Note copy({int? id, bool? pinned, String? title, String? des}) => (Note(
-      id: id ?? this.id,
-      pinned: pinned ?? this.pinned,
-      title: title ?? this.title,
-      des: des ?? this.des));
-}
 
 class NoteTableName {
   static const String id = '_id';
@@ -101,7 +77,7 @@ class NoteDbHelper {
 //-----------------GET ALL THE ROWS IN THE TABLE------------------
   Future<List<Note>> getAllNote() async {
     Database db = await instance.database;
-    final result = await db.query(_tablename);
+    final result = await db.query(_tablename, orderBy: '${NoteTableName.id} DESC');
     return result.map((dbobject) => Note.toNote(dbobject)).toList();
   }
 
