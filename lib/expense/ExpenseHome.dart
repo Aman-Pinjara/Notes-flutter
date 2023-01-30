@@ -1,14 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:noteapp/common/MyDrawer.dart';
-import 'package:noteapp/note/NoteHome.dart';
 
 class ExpenseHome extends StatefulWidget {
   const ExpenseHome({Key? key}) : super(key: key);
@@ -142,26 +137,12 @@ class _ExpenseHomeState extends State<ExpenseHome> {
           ],
         ),
       ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
             onPressed: () {},
             elevation: 1,
-            backgroundColor: Colors.greenAccent,
+            backgroundColor: Colors.amber,
             child: Icon(Icons.add),
           ),
-          SizedBox(
-            height: 30,
-          ),
-          FloatingActionButton(
-            onPressed: () {},
-            elevation: 1,
-            backgroundColor: Colors.redAccent,
-            child: Icon(Icons.remove),
-          )
-        ],
-      ),
     );
   }
 }

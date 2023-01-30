@@ -29,100 +29,153 @@ class _NoteEditPageState extends State<NoteEditPage> {
   @override
   Widget build(BuildContext context) {
     final bool cursaved = widget.note.pinned;
-    return Scaffold(
-      backgroundColor: widget.note.pinned ? Colors.amber[100] : Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.amber,
-        actions: [
-          IconButton(
+    return WillPopScope(
+      onWillPop: () async {
+        String titleIn = title;
+        if (title == "" && des != "") {
+          titleIn = des.length > 20 ? des.substring(0, 20) : des;
+        } else if (title == "" && des == "") {
+          Navigator.of(context).pop();
+          return true;
+        }
+        await NoteDbHelper.instance.updateNote(Note(
+            title: titleIn,
+            pinned: saved ?? cursaved,
+            des: des,
+            id: widget.note.id!));
+        Provider.of<NoteListProvider>(context, listen: false).noteupdate();
+        Navigator.of(context).pop();
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor:
+            widget.note.pinned ? Colors.amber.shade200 : Colors.white,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor:
+              widget.note.pinned ? Colors.amber.shade200 : Colors.white,
+          leading: IconButton(
             onPressed: () async {
-              bool? cancel = await showDialog<bool>(
-                context: context,
-                builder: (BuildContext context) => AlertDialog(
-                  title: const Text('Confirm delete'),
-                  actions: <Widget>[
-                    TextButton(
-                        onPressed: () => Navigator.pop(context, false),
-                        child: const Text('Cancel')),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context, true);
-                      },
-                      child: const Text('Yes'),
-                    ),
-                  ],
-                ),
-              );
-              if (cancel != null && cancel) {
-                NoteDbHelper.instance.deleteNote(widget.note.id!);
-                Provider.of<NoteListProvider>(context, listen: false)
-                    .noteupdate();
+              String titleIn = title;
+              if (title == "" && des != "") {
+                titleIn = des.length > 20 ? des.substring(0, 20) : des;
+              } else if (title == "" && des == "") {
                 Navigator.of(context).pop();
+                return;
               }
+              await NoteDbHelper.instance.updateNote(Note(
+                  title: titleIn,
+                  pinned: saved ?? cursaved,
+                  des: des,
+                  id: widget.note.id!));
+              Provider.of<NoteListProvider>(context, listen: false)
+                  .noteupdate();
+              Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.delete_outline),
-          ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                saved ??= cursaved;
-                saved = !saved!;
-              });
-            },
-            icon: saved ?? cursaved
-                ? const Icon(Icons.bookmark)
-                : const Icon(Icons.bookmark_outline),
-          ),
-          IconButton(
-              onPressed: () async {
-                String titleIn = title;
-                if (title == "" && des != "") {
-                  titleIn = des.length > 20 ? des.substring(0, 20) : des;
-                } else if (title == "" && des == "") {
-                  Navigator.of(context).pop();
-                  return;
-                }
-                await NoteDbHelper.instance.updateNote(Note(
-                    title: titleIn,
-                    pinned: saved ?? cursaved,
-                    des: des,
-                    id: widget.note.id!));
-                Provider.of<NoteListProvider>(context, listen: false)
-                    .noteupdate();
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(Icons.save_alt_sharp))
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          children: [
-            TextField(
-              onChanged: ((value) => title = value),
-              style: const TextStyle(fontSize: 20),
-              decoration: const InputDecoration(
-                hintText: 'Title',
-                border: InputBorder.none,
-              ),
-              controller: titleController,
-              maxLines: 1,
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: widget.note.pinned ? Colors.white : Colors.amber.shade200,
             ),
-            Expanded(
-              child: TextField(
-                onChanged: ((value) => des = value),
+          ),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                bool? cancel = await showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text('Confirm delete'),
+                    actions: <Widget>[
+                      TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: const Text('Cancel')),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text('Yes'),
+                      ),
+                    ],
+                  ),
+                );
+                if (cancel != null && cancel) {
+                  NoteDbHelper.instance.deleteNote(widget.note.id!);
+                  Provider.of<NoteListProvider>(context, listen: false)
+                      .noteupdate();
+                  Navigator.of(context).pop();
+                }
+              },
+              icon: Icon(
+                Icons.delete_outline,
+                color:
+                    widget.note.pinned ? Colors.white : Colors.amber.shade200,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  saved ??= cursaved;
+                  saved = !saved!;
+                });
+              },
+              icon: Icon(
+                saved ?? cursaved ? Icons.bookmark : Icons.bookmark_outline,
+                color:
+                    widget.note.pinned ? Colors.white : Colors.amber.shade200,
+              ),
+            ),
+            // IconButton(
+            //   onPressed: () async {
+            //     String titleIn = title;
+            //     if (title == "" && des != "") {
+            //       titleIn = des.length > 20 ? des.substring(0, 20) : des;
+            //     } else if (title == "" && des == "") {
+            //       Navigator.of(context).pop();
+            //       return;
+            //     }
+            //     await NoteDbHelper.instance.updateNote(Note(
+            //         title: titleIn,
+            //         pinned: saved ?? cursaved,
+            //         des: des,
+            //         id: widget.note.id!));
+            //     Provider.of<NoteListProvider>(context, listen: false)
+            //         .noteupdate();
+            //     Navigator.of(context).pop();
+            //   },
+            //   icon: Icon(Icons.save_outlined),
+            //   color: widget.note.pinned ? Colors.white : Colors.amber.shade200,
+            // )
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Column(
+            children: [
+              TextField(
+                onChanged: ((value) => title = value),
                 style: const TextStyle(fontSize: 20),
                 decoration: const InputDecoration(
-                  hintText: 'Description',
+                  hintText: 'Title',
                   border: InputBorder.none,
                 ),
-                expands: true,
-                controller: desController,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
+                controller: titleController,
+                maxLines: 1,
               ),
-            ),
-          ],
+              Expanded(
+                child: TextField(
+                  onChanged: ((value) => des = value),
+                  style: const TextStyle(fontSize: 20),
+                  decoration: const InputDecoration(
+                    hintText: 'Description',
+                    border: InputBorder.none,
+                  ),
+                  expands: true,
+                  controller: desController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

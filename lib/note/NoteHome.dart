@@ -5,10 +5,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:noteapp/common/MyDrawer.dart';
-import 'package:noteapp/expense/ExpenseHome.dart';
 import 'package:provider/provider.dart';
 
-import '../notesdb.dart';
 import 'NoteAddPage.dart';
 import 'NoteEditPage.dart';
 import 'NoteListProvider.dart';
@@ -36,7 +34,7 @@ class _NoteHomeState extends State<NoteHome> {
       body: RawScrollbar(
         thumbVisibility: true,
         thickness: 5,
-        thumbColor: Colors.red,
+        thumbColor: Colors.amber.shade200.withOpacity(0.7),
         interactive: false,
         child: Stack(
           children: [
@@ -122,15 +120,15 @@ class _NoteHomeState extends State<NoteHome> {
                             ),
                           ),
                         ),
-                        ClipRRect(
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(
-                              sigmaX: 7,
-                              sigmaY: 7,
-                            ),
-                            child: Container(),
-                          ),
-                        )
+                        // ClipRRect(
+                        //   child: BackdropFilter(
+                        //     filter: ImageFilter.blur(
+                        //       sigmaX: 7,
+                        //       sigmaY: 7,
+                        //     ),
+                        //     child: Container(),
+                        //   ),
+                        // )
                       ],
                     ),
                     titlePadding: const EdgeInsets.only(bottom: 20),
@@ -143,7 +141,7 @@ class _NoteHomeState extends State<NoteHome> {
                       ),
                     ),
                   ),
-                  expandedHeight: 180,
+                  expandedHeight: 220,
                   centerTitle: true,
                 ),
                 gridNote()
@@ -152,11 +150,10 @@ class _NoteHomeState extends State<NoteHome> {
           ],
         ),
       ),
-      // body: gridNote(),
       floatingActionButton: FloatingActionButton(
-        elevation: 2,
+        elevation: 0,
         child: const Icon(Icons.add),
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.amber.shade500,
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -186,9 +183,28 @@ class _NoteHomeState extends State<NoteHome> {
         ),
       );
     } else {
-      return const SliverList(
-          delegate:
-              SliverChildListDelegate.fixed([Text('No Notes Yet.........')]));
+      return SliverList(
+        delegate: SliverChildListDelegate.fixed(
+          [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 4,
+                ),
+                Text(
+                  'No Notes Yet.........',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      );
     }
   }
 }
@@ -204,17 +220,51 @@ class NoteTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool saved = note.pinned;
-    return InkWell(
-      onTap: () => {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => NoteViewPage(note: note)))
+    return GestureDetector(
+      onLongPress: () {
+        // NoteViewPage(context, note);
+        Navigator.of(context).push(PageRouteBuilder(
+            opaque: false,
+            barrierDismissible: true,
+            pageBuilder: (BuildContext context, _, __) {
+              return SimpleDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                title: Hero(
+                  tag: '${note.id!}title',
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Text(
+                      note.title,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                contentPadding: EdgeInsets.all(20),
+                children: [
+                  Hero(
+                    tag: '${note.id!}des',
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Text(
+                        note.des ?? "",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }));
       },
-      onDoubleTap: () => {
+      onTap: () => {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => NoteEditPage(note: note)))
       },
-      child: Hero(
-        tag: note.id!,
+      child: Container(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: BackdropFilter(
@@ -223,10 +273,10 @@ class NoteTile extends StatelessWidget {
               sigmaY: 10,
             ),
             child: Container(
-              // color: saved ? Colors.amber[100] : Colors.grey[200],
               decoration: BoxDecoration(
-                // boxShadow: kElevationToShadow[2],
-                color: Colors.grey.shade200.withOpacity(0.5),
+                color: saved
+                    ? Colors.amber.shade200.withOpacity(0.5)
+                    : Colors.grey.shade200.withOpacity(0.5),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,17 +284,35 @@ class NoteTile extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(15.0),
-                    child: Text(note.title,
-                        style: const TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    child: Hero(
+                      tag: '${note.id!}title',
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Text(
+                          note.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      note.des ?? "",
-                      style: const TextStyle(
-                          fontSize: 15.0, overflow: TextOverflow.ellipsis),
-                      maxLines: 5,
+                    child: Hero(
+                      tag: '${note.id!}des',
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Text(
+                          note.des ?? "",
+                          style: const TextStyle(
+                              fontSize: 15.0, overflow: TextOverflow.ellipsis),
+                          maxLines: 5,
+                        ),
+                      ),
                     ),
                   ),
                 ],

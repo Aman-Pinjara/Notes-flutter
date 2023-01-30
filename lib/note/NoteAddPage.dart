@@ -20,8 +20,17 @@ class _NoteAddPageState extends State<NoteAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.amber,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.amber.shade200,
+          ),
+        ),
+        backgroundColor: Colors.white,
         actions: [
           IconButton(
             onPressed: () async {
@@ -40,17 +49,22 @@ class _NoteAddPageState extends State<NoteAddPage> {
                   .noteupdate();
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.save_alt_sharp),
+            icon: Icon(
+              Icons.save_outlined,
+              color: Colors.amber.shade200,
+            ),
           ),
           IconButton(
-              onPressed: () {
-                setState(() {
-                  saved = !saved;
-                });
-              },
-              icon: saved
-                  ? const Icon(Icons.bookmark)
-                  : const Icon(Icons.bookmark_outline))
+            onPressed: () {
+              setState(() {
+                saved = !saved;
+              });
+            },
+            icon: Icon(
+              saved ? Icons.bookmark : Icons.bookmark_outline,
+              color: Colors.amber.shade200,
+            ),
+          ),
         ],
       ),
       body: Padding(
