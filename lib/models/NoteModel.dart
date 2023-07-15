@@ -1,4 +1,4 @@
-import '../notesdb.dart';
+import '../database/notesdb.dart';
 
 class Note {
   final int? id;

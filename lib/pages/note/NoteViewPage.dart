@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../notesdb.dart';
-import 'NoteListProvider.dart';
-import 'NoteModel.dart';
+import '../../database/notesdb.dart';
+import '../../providers/NoteListProvider.dart';
+import '../../models/NoteModel.dart';
 
 // class NoteViewPage extends StatefulWidget {
 //   final Note note;

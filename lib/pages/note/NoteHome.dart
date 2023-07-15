@@ -9,9 +9,8 @@ import 'package:provider/provider.dart';
 
 import 'NoteAddPage.dart';
 import 'NoteEditPage.dart';
-import 'NoteListProvider.dart';
-import 'NoteModel.dart';
-import 'NoteViewPage.dart';
+import '../../providers/NoteListProvider.dart';
+import '../../models/NoteModel.dart';
 
 class NoteHome extends StatefulWidget {
   const NoteHome({Key? key}) : super(key: key);

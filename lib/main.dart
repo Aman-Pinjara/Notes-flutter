@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:noteapp/HomePageProvider.dart';
-import 'package:noteapp/note/NoteListProvider.dart';
+import 'package:noteapp/providers/HomePageProvider.dart';
+import 'package:noteapp/pages/expense/ExpenseHome.dart';
+import 'package:noteapp/providers/ExpenseListProvider.dart';
+import 'package:noteapp/providers/NoteListProvider.dart';
 import 'package:provider/provider.dart';
 
-import 'note/NoteHome.dart';
+import 'pages/note/NoteHome.dart';
+import 'providers/UserListProvider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,8 +19,14 @@ void main() {
         ChangeNotifierProvider<HomePageProvider>(
           create: (_) => HomePageProvider(),
         ),
+        ChangeNotifierProvider<ExpenseListProvider>(
+          create: (_) => ExpenseListProvider(),
+        ),
+        ChangeNotifierProvider<UserListProvider>(
+          create: (_) => UserListProvider(),
+        ),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -35,7 +44,7 @@ class _MyAppState extends State<MyApp> {
     Provider.of<NoteListProvider>(context, listen: false).noteupdate();
     return const MaterialApp(
       title: 'Notes App',
-      home: NoteHome(),
+      home: ExpenseHome(),
     );
   }
 }

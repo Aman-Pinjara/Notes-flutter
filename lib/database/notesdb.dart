@@ -1,13 +1,9 @@
-//---------NOTE --------------------------
-
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'note/NoteModel.dart';
+import '../models/NoteModel.dart';
 
 const String _tablename = 'notes';
-
-
 
 class NoteTableName {
   static const String id = '_id';
@@ -77,7 +73,8 @@ class NoteDbHelper {
 //-----------------GET ALL THE ROWS IN THE TABLE------------------
   Future<List<Note>> getAllNote() async {
     Database db = await instance.database;
-    final result = await db.query(_tablename, orderBy: '${NoteTableName.id} DESC');
+    final result =
+        await db.query(_tablename, orderBy: '${NoteTableName.id} DESC');
     return result.map((dbobject) => Note.toNote(dbobject)).toList();
   }
 

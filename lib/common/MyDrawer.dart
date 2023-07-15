@@ -1,12 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:noteapp/HomePageProvider.dart';
+import 'package:noteapp/providers/HomePageProvider.dart';
 import 'package:noteapp/enum/Pages.dart';
-import 'package:noteapp/note/NoteHome.dart';
+import 'package:noteapp/pages/note/NoteHome.dart';
 import 'package:provider/provider.dart';
 
-import '../expense/ExpenseHome.dart';
+import '../pages/expense/ExpenseHome.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);
